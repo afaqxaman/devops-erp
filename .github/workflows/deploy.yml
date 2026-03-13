@@ -1,0 +1,44 @@
+name: DevOps ERP CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm run build
+
+    - name: Build Docker Image - Backend
+      run: docker build -t erp-backend ./backend
+
+    - name: Build Docker Image - Frontend
+      run: docker build -t erp-frontend ./frontend
+
+    - name: Success
+      run: echo "✅ CI/CD Pipeline Successful!"
