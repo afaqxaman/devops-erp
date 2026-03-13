@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: erp-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: devops_erp
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: erp-backend
+    restart: on-failure
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: erp-mysql
+      DB_USER: root
+      DB_PASSWORD: admin123
+      DB_NAME: devops_erp
+      JWT_SECRET: secret123
+    depends_on:
+      - mysql
+
+  frontend:
+    build: ./frontend
+    container_name: erp-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
