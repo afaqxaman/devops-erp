@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../Sidebar';
 
+const API = process.env.REACT_APP_API_URL;
+
 function ShopExpenses() {
   const [expenses, setExpenses] = useState([]);
   const [form, setForm] = useState({ category: '', amount: '', description: '', date: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/shop-expenses').then(res => setExpenses(res.data.data));
+    axios.get(`${API}/api/shop-expenses`).then(res => setExpenses(res.data.data));
   }, []);
 
   const handleAdd = async () => {
-    await axios.post('http://localhost:5000/api/shop-expenses', form);
+    await axios.post(`${API}/api/shop-expenses`, form);
     window.location.reload();
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/api/shop-expenses/${id}`);
+    await axios.delete(`${API}/api/shop-expenses/${id}`);
     window.location.reload();
   };
 

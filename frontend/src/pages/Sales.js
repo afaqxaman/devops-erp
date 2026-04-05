@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../Sidebar';
 
+const API = process.env.REACT_APP_API_URL;
+
 function Sales() {
   const [sales, setSales] = useState([]);
   const [form, setForm] = useState({ product: '', quantity: '', total: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/sales').then(res => setSales(res.data.data));
+    axios.get(`${API}/api/sales`).then(res => setSales(res.data.data));
   }, []);
 
   const handleAdd = async () => {
-    await axios.post('http://localhost:5000/api/sales', form);
+    await axios.post(`${API}/api/sales`, form);
     window.location.reload();
   };
 

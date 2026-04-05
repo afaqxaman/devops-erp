@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../Sidebar';
 
+const API = process.env.REACT_APP_API_URL;
+
 function Employees() {
   const [employees, setEmployees] = useState([]);
   const [form, setForm] = useState({ name: '', role: '', department: '', salary: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/employees').then(res => setEmployees(res.data.data));
+    axios.get(`${API}/api/employees`).then(res => setEmployees(res.data.data));
   }, []);
 
   const handleAdd = async () => {
-    await axios.post('http://localhost:5000/api/employees', form);
+    await axios.post(`${API}/api/employees`, form);
     window.location.reload();
   };
 

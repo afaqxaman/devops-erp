@@ -2,17 +2,30 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../Sidebar';
 
+const API = process.env.REACT_APP_API_URL;
+
 function Inventory() {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState({ item_name: '', quantity: '', price: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/inventory').then(res => setItems(res.data.data));
+    axios.get(`${API}/api/inventory`).then(res => setItems(res.data.data));
   }, []);
 
   const handleAdd = async () => {
-    await axios.post('http://localhost:5000/api/inventory', form);
+    if (!form.item_name || !form.quantity || !form.price) {
+      alert('Sab fields bharo!');
+      return;
+    }
+    await axios.post(`${API}/api/inventory`, form);
     window.location.reload();
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Delete karna chahte ho?')) {
+      await axios.delete(`${API}/api/inventory/${id}`);
+      setItems(items.filter(item => item.id !== id));
+    }
   };
 
   return (
@@ -22,9 +35,9 @@ function Inventory() {
         <h2>📦 Inventory</h2>
         <div style={{ background: 'white', padding: '20px', borderRadius: '10px', marginBottom: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <input placeholder="Item Name" onChange={e => setForm({...form, item_name: e.target.value})} style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ddd', flex: 1 }} />
-            <input placeholder="Quantity" onChange={e => setForm({...form, quantity: e.target.value})} style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ddd', flex: 1 }} />
-            <input placeholder="Price" onChange={e => setForm({...form, price: e.target.value})} style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ddd', flex: 1 }} />
+            <input placeholder="Item Name" value={form.item_name} onChange={e => setForm({...form, item_name: e.target.value})} style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ddd', flex: 1 }} />
+            <input placeholder="Quantity" value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ddd', flex: 1 }} />
+            <input placeholder="Price" value={form.price} onChange={e => setForm({...form, price: e.target.value})} style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ddd', flex: 1 }} />
             <button onClick={handleAdd} style={{ padding: '8px 16px', background: '#34a853', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Add</button>
           </div>
         </div>
@@ -35,6 +48,7 @@ function Inventory() {
                 <th style={{ padding: '12px' }}>Item Name</th>
                 <th style={{ padding: '12px' }}>Quantity</th>
                 <th style={{ padding: '12px' }}>Price</th>
+                <th style={{ padding: '12px' }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -43,6 +57,9 @@ function Inventory() {
                   <td style={{ padding: '12px' }}>{item.item_name}</td>
                   <td style={{ padding: '12px' }}>{item.quantity}</td>
                   <td style={{ padding: '12px' }}>{item.price}</td>
+                  <td style={{ padding: '12px' }}>
+                    <button onClick={() => handleDelete(item.id)} style={{ padding: '6px 12px', background: '#e53935', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -53,4 +70,4 @@ function Inventory() {
   );
 }
 
-export default Inventory;
+export default Inventory;=

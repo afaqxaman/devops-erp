@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../Sidebar';
 
+const API = process.env.REACT_APP_API_URL;
+
 function Finance() {
   const [records, setRecords] = useState([]);
   const [form, setForm] = useState({ type: '', amount: '', description: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/finance').then(res => setRecords(res.data.data));
+    axios.get(`${API}/api/finance`).then(res => setRecords(res.data.data));
   }, []);
 
   const handleAdd = async () => {
-    await axios.post('http://localhost:5000/api/finance', form);
+    await axios.post(`${API}/api/finance`, form);
     window.location.reload();
   };
 
