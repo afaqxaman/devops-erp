@@ -70,4 +70,4 @@ function Inventory() {
   );
 }
 
-export default Inventory;=
+export default Inventory;
